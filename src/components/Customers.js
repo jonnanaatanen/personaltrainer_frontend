@@ -13,7 +13,6 @@ function Customers() {
 const [customers, setCustomers] = useState([]);
 
 
-const gridRef = useRef();
 
 useEffect(() => {
     getCustomers();
