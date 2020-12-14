@@ -25,9 +25,7 @@ const inputChanged = (event) => {
 };
 
 const addTraining = () => {
-   //setTraining(training.customer = props.rowData.links[0].href)
- //props.addTraining({...training, customer: props.links[0].href});
- // handleClose();
+  
 		training.date = moment().toISOString(training.date);
 		props.addTraining(training);
 		handleClose();
