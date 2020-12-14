@@ -6,12 +6,15 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ClearIcon from '@material-ui/icons/Clear';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-
+import Snackbar from '@material-ui/core/Snackbar';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 function Trainings() {
 
 const [trainings, setTrainings] = useState([]);
+const [open, setOpen] = React.useState(false);
+const [msg, setMsg] = useState('');
 
 
 useEffect(() => {
@@ -25,16 +28,21 @@ const getTrainings = () => {
     .catch(err => console.error(err))
 }
 
+const deleteTraining = (rowData) => {
+    fetch('https://customerrest.herokuapp.com/api/trainings/' + rowData.id, {
+        method: 'DELETE'
+    })
+    .then(_ => getTrainings())
+    .then(_ => setMsg('Training was deleted succesfully'))
+    .then(_ => setOpen(true))
+    .catch(err => console.error(err))
+   }
 
-const columns = [
-    
-    {title: 'Activity', field: 'activity'},
-    {title: 'Date', field: 'date', type: 'datetime', dateSetting: {locale: 'es-US'} },
-    {title: 'Duration (min)', field: 'duration'},
-    {title: 'Customer firstname', field: 'customer.firstname'},
-    {title: 'Customer lastname', field: 'customer.lastname'}
-   
-]
+const closeSnackbar = () => {
+    setOpen(false);
+}
+
+
 
 const tableIcons ={
     Search: SearchIcon,
@@ -42,15 +50,24 @@ const tableIcons ={
     LastPage: LastPageIcon,
     Right: ChevronRightIcon,
     Left: ChevronLeftIcon,
-    Clear: ClearIcon
+    Clear: ClearIcon,
+    Delete: DeleteIcon
 
 }
 
 return(
 <div>
+<div>
     <MaterialTable
+    columns = {[
+    
+        {title: 'Activity', field: 'activity'},
+        {title: 'Date', field: 'date', type: 'datetime'},
+        {title: 'Duration (min)', field: 'duration'},
+        {title: 'Firstname', field: 'customer.firstname'},
+        {title: 'Lastname', field: 'customer.lastname'}
+    ]}
     title="Trainings"
-    columns={columns}
     key={trainings}
     data={trainings}
     options={{
@@ -59,7 +76,23 @@ return(
         pagination: true
       }}
      icons={tableIcons}  
+     editable={{
+         onRowDelete: oldData =>
+         new Promise((resolve, reject)=> {
+         setTimeout(() => {   
+         deleteTraining(oldData)
+         resolve();
+         }, 1000)    
+         })
+     }}
     />
+</div>
+<Snackbar
+       open={open}
+       autoHideDuration={3000}
+       onClose={closeSnackbar}
+       message={msg}
+       />
 </div>
 );
 };
