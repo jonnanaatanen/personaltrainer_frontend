@@ -26,10 +26,11 @@ const inputChanged = (event) => {
 
 const addTraining = () => {
   
-		training.date = moment().toISOString(training.date);
-		props.addTraining(training);
+	  training.date = moment().toISOString(training.date);
+   // props.addTraining(training);
+    props.addTraining({...training, customer: props.training.links[0].href});
 		handleClose();
-		setTraining({activity: '', date: '', duration: '', customer: props.link});
+		//setTraining({activity: '', date: '', duration: '', customer: props.link});
 	};
 
 
